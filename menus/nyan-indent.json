@@ -1,0 +1,26 @@
+{
+  "context-menu": {
+    "atom-text-editor": [
+      {
+        "label": "Toggle nyan-indent",
+        "command": "nyan-indent:toggle"
+      }
+    ]
+  },
+  "menu": [
+    {
+      "label": "Packages",
+      "submenu": [
+        {
+          "label": "nyan-indent",
+          "submenu": [
+            {
+              "label": "Toggle",
+              "command": "nyan-indent:toggle"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
