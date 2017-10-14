@@ -1,5 +1,7 @@
 'use babel';
 
+import filter from 'lodash/filter';
+import { prepareEditor } from './helpers';
 import NyanIndent from '../lib/nyan-indent';
 
 // Use the command `window:run-package-specs` (cmd-alt-ctrl-p) to run specs.
@@ -7,64 +9,47 @@ import NyanIndent from '../lib/nyan-indent';
 // To run a specific `it` or `describe` block add an `f` to the front (e.g. `fit`
 // or `fdescribe`). Remove the `f` to unfocus the block.
 
+
+const findDecorationByColor = (decorations, color) =>
+  filter(decorations, decoration => decoration.properties.style.backgroundColor === color);
+
 describe('NyanIndent', () => {
-  let workspaceElement;
-  let activationPromise;
+  it('Should paint on render', () =>
+    prepareEditor(atom).then((editor) => {
+      atom.packages.activatePackage('nyan-indent').then(() => {
+        const decorations = editor.getDecorations({
+          type: 'text',
+          class: 'nyan-indent',
+        });
+        expect(decorations.length).toBe(15);
 
-  beforeEach(() => {
-    workspaceElement = atom.views.getView(atom.workspace);
-    activationPromise = atom.packages.activatePackage('nyan-indent');
-  });
+        const colors = atom.config.get('nyan-indent.colors');
 
-  describe('when the nyan-indent:toggle event is triggered', () => {
-    it('hides and shows the modal panel', () => {
-      // Before the activation event the view is not on the DOM, and no panel
-      // has been created
-      expect(workspaceElement.querySelector('.nyan-indent')).not.toExist();
+        const firstTabDecorations = findDecorationByColor(decorations, colors[0]);
+        expect(
+          firstTabDecorations.length,
+        ).toBe(5);
 
-      // This is an activation event, triggering it will cause the package to be
-      // activated.
-      atom.commands.dispatch(workspaceElement, 'nyan-indent:toggle');
+        const secondTabDecorations = findDecorationByColor(decorations, colors[1]);
+        expect(
+          secondTabDecorations.length,
+        ).toBe(4);
 
-      waitsForPromise(() => activationPromise);
+        const thirdTabDecorations = findDecorationByColor(decorations, colors[2]);
+        expect(
+          thirdTabDecorations.length,
+        ).toBe(3);
 
-      runs(() => {
-        expect(workspaceElement.querySelector('.nyan-indent')).toExist();
+        const fourthTabDecorations = findDecorationByColor(decorations, colors[3]);
+        expect(
+          fourthTabDecorations.length,
+        ).toBe(2);
 
-        const nyanIndentElement = workspaceElement.querySelector('.nyan-indent');
-        expect(nyanIndentElement).toExist();
-
-        const nyanIndentPanel = atom.workspace.panelForItem(nyanIndentElement);
-        expect(nyanIndentPanel.isVisible()).toBe(true);
-        atom.commands.dispatch(workspaceElement, 'nyan-indent:toggle');
-        expect(nyanIndentPanel.isVisible()).toBe(false);
+        const fifthTabDecorations = findDecorationByColor(decorations, colors[4]);
+        expect(
+          fifthTabDecorations.length,
+        ).toBe(1);
       });
-    });
-
-    it('hides and shows the view', () => {
-      // This test shows you an integration test testing at the view level.
-
-      // Attaching the workspaceElement to the DOM is required to allow the
-      // `toBeVisible()` matchers to work. Anything testing visibility or focus
-      // requires that the workspaceElement is on the DOM. Tests that attach the
-      // workspaceElement to the DOM are generally slower than those off DOM.
-      jasmine.attachToDOM(workspaceElement);
-
-      expect(workspaceElement.querySelector('.nyan-indent')).not.toExist();
-
-      // This is an activation event, triggering it causes the package to be
-      // activated.
-      atom.commands.dispatch(workspaceElement, 'nyan-indent:toggle');
-
-      waitsForPromise(() => activationPromise);
-
-      runs(() => {
-        // Now we can test for view visibility
-        const nyanIndentElement = workspaceElement.querySelector('.nyan-indent');
-        expect(nyanIndentElement).toBeVisible();
-        atom.commands.dispatch(workspaceElement, 'nyan-indent:toggle');
-        expect(nyanIndentElement).not.toBeVisible();
-      });
-    });
-  });
+    }),
+  );
 });
