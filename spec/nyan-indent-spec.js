@@ -8,7 +8,8 @@ import NyanIndent from '../lib/nyan-indent';
 // or `fdescribe`). Remove the `f` to unfocus the block.
 
 describe('NyanIndent', () => {
-  let workspaceElement, activationPromise;
+  let workspaceElement;
+  let activationPromise;
 
   beforeEach(() => {
     workspaceElement = atom.views.getView(atom.workspace);
@@ -25,17 +26,15 @@ describe('NyanIndent', () => {
       // activated.
       atom.commands.dispatch(workspaceElement, 'nyan-indent:toggle');
 
-      waitsForPromise(() => {
-        return activationPromise;
-      });
+      waitsForPromise(() => activationPromise);
 
       runs(() => {
         expect(workspaceElement.querySelector('.nyan-indent')).toExist();
 
-        let nyanIndentElement = workspaceElement.querySelector('.nyan-indent');
+        const nyanIndentElement = workspaceElement.querySelector('.nyan-indent');
         expect(nyanIndentElement).toExist();
 
-        let nyanIndentPanel = atom.workspace.panelForItem(nyanIndentElement);
+        const nyanIndentPanel = atom.workspace.panelForItem(nyanIndentElement);
         expect(nyanIndentPanel.isVisible()).toBe(true);
         atom.commands.dispatch(workspaceElement, 'nyan-indent:toggle');
         expect(nyanIndentPanel.isVisible()).toBe(false);
@@ -57,13 +56,11 @@ describe('NyanIndent', () => {
       // activated.
       atom.commands.dispatch(workspaceElement, 'nyan-indent:toggle');
 
-      waitsForPromise(() => {
-        return activationPromise;
-      });
+      waitsForPromise(() => activationPromise);
 
       runs(() => {
         // Now we can test for view visibility
-        let nyanIndentElement = workspaceElement.querySelector('.nyan-indent');
+        const nyanIndentElement = workspaceElement.querySelector('.nyan-indent');
         expect(nyanIndentElement).toBeVisible();
         atom.commands.dispatch(workspaceElement, 'nyan-indent:toggle');
         expect(nyanIndentElement).not.toBeVisible();

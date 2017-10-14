@@ -2,7 +2,8 @@
   "extends": "airbnb",
   "env": {
     "node": true,
-    "atomtest": true
+    "atomtest": true,
+    "jasmine": true
   },
   "globals": {
     "atom": false
