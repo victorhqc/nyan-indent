@@ -1,9 +1,14 @@
 {
   "name": "nyan-indent",
   "main": "./lib/nyan-indent",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Rainbow indentation",
-  "keywords": ["atom", "indentation", "colors", "rainbow"],
+  "keywords": [
+    "atom",
+    "indentation",
+    "colors",
+    "rainbow"
+  ],
   "repository": "https://github.com/victorhqc/nyan-indent",
   "license": "MIT",
   "engines": {
