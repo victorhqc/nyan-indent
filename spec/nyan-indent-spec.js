@@ -27,6 +27,8 @@ tabulation of 4
 tabulation of 5
 `;
 
+const indentedLine = '        indentation of 4';
+
 // Use the command `window:run-package-specs` (cmd-alt-ctrl-p) to run specs.
 //
 // To run a specific `it` or `describe` block add an `f` to the front (e.g. `fit`
@@ -171,5 +173,20 @@ describe('NyanIndent', () => {
     const decorations = findDecorations(editor);
 
     expect(decorations.length).toBe(2);
+  });
+
+  it('Should set correct paint when removing indentation from a single line', () => {
+    const editor = atom.workspace.getActiveTextEditor();
+
+    editor.setText(indentedLine);
+    expect(findDecorations(editor).length).toBe(4);
+
+    const indentedLine2 = '      indentation of 3';
+    editor.setTextInBufferRange([[0, 0], [0, 24]], indentedLine2);
+    expect(findDecorations(editor).length).toBe(3);
+
+    const indentedLine3 = '    indentation of 2';
+    editor.setTextInBufferRange([[0, 0], [0, 22]], indentedLine3);
+    expect(findDecorations(editor).length).toBe(2);
   });
 });
