@@ -145,16 +145,25 @@ describe('NyanIndent', () => {
 
   it('Shoud not paint text once package is toggled off', () => {
     const editor = atom.workspace.getActiveTextEditor();
-    editor.setText(notIndentedText);
+    editor.setText(indentedText);
 
     // Toggles off
     togglePackage(atom);
 
     // Adds 2 tabulations
     const textToInsert = '    tabulation of 3';
-    editor.setTextInBufferRange([[4, 0], [4, 21]], textToInsert);
-    const decorations = findDecorations(editor);
+    editor.setTextInBufferRange([[4, 0], [4, 22]], textToInsert);
 
+    // Adds 3 tabulations
+    const textToInsert2 = '      tabulation of 4';
+    editor.setTextInBufferRange([[4, 0], [5, 21]], textToInsert2);
+
+    // Sets the cursor at the last line
+    editor.setCursorScreenPosition([5, 26]);
+    editor.insertNewline();
+    editor.insertText('Hey');
+
+    const decorations = findDecorations(editor);
     expect(decorations.length).toBe(0);
   });
 
@@ -283,6 +292,5 @@ describe('NyanIndent', () => {
 
     expect(findDecorationByColor(secondDecorations, newColorsAgain[2]).length).toBe(1);
     expect(findDecorationByColor(secondDecorations, newColors[2]).length).toBe(0);
-
   });
 });
