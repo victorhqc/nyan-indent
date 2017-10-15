@@ -19,3 +19,8 @@ export const getColors = atom => atom.config.get('nyan-indent.colors');
 
 export const findDecorationByColor = (decorations, color) =>
   filter(decorations, decoration => decoration.properties.style.backgroundColor === color);
+
+export const togglePackage = (atom) => {
+  const workspaceElement = atom.views.getView(atom.workspace);
+  atom.commands.dispatch(workspaceElement, 'nyan-indent:toggle');
+};
