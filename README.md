@@ -1,9 +1,8 @@
 # nyan-indent
-Have a colorful indentation.
 
 [![Build Status](https://travis-ci.org/victorhqc/nyan-indent.svg?branch=master)](https://travis-ci.org/victorhqc/nyan-indent)
 
-Have a colorful tabulation
+Colorful indentation
 
 ![Nyan indent screen capture](https://i.imgur.com/BkIAjhU.gif)
 
