@@ -189,4 +189,100 @@ describe('NyanIndent', () => {
     editor.setTextInBufferRange([[0, 0], [0, 22]], indentedLine3);
     expect(findDecorations(editor).length).toBe(2);
   });
+
+  it('Should change painting when configuration colors change', () => {
+    const editor = atom.workspace.getActiveTextEditor();
+    editor.setText(indentedText);
+
+    const newColors = [
+      '#ff7f7f',
+      '#ffe481',
+      '#d2ff8b',
+      '#a5d1ff',
+      '#e39cff',
+    ];
+    atom.config.set('nyan-indent.colors', newColors);
+    const decorations = findDecorations(editor);
+    expect(decorations.length).toBe(15);
+
+    // There should be 5 red "indentations" from top to bottom
+    const firstTabDecorations = findDecorationByColor(decorations, newColors[0]);
+    expect(
+      firstTabDecorations.length,
+    ).toBe(5);
+
+    // There should be 4 yellow "indentations" from top to bottom
+    const secondTabDecorations = findDecorationByColor(decorations, newColors[1]);
+    expect(
+      secondTabDecorations.length,
+    ).toBe(4);
+
+    // There should be 3 green "indentations" from top to bottom
+    const thirdTabDecorations = findDecorationByColor(decorations, newColors[2]);
+    expect(
+      thirdTabDecorations.length,
+    ).toBe(3);
+
+    // There should be 2 blue "indentations" from top to bottom
+    const fourthTabDecorations = findDecorationByColor(decorations, newColors[3]);
+    expect(
+      fourthTabDecorations.length,
+    ).toBe(2);
+
+    // There should be 1 purple "indentation" from top to bottom
+    const fifthTabDecorations = findDecorationByColor(decorations, newColors[4]);
+    expect(
+      fifthTabDecorations.length,
+    ).toBe(1);
+  });
+
+  it('Should use new colors after configuration colors changed', () => {
+    const editor = atom.workspace.getActiveTextEditor();
+    editor.setText(notIndentedText);
+    const originalColors = getColors(atom);
+
+    const newColors = [
+      '#ff7f7f',
+      '#ffe481',
+      '#d2ff8b',
+      '#a5d1ff',
+      '#e39cff',
+    ];
+    atom.config.set('nyan-indent.colors', newColors);
+
+    const textToInsert = '    tabulation of 4';
+    editor.setTextInBufferRange([[5, 0], [5, 21]], textToInsert);
+    const decorations = findDecorations(editor);
+
+    expect(decorations.length).toBe(2);
+    expect(findDecorationByColor(decorations, newColors[0]).length).toBe(1);
+    expect(findDecorationByColor(decorations, originalColors[0]).length).toBe(0);
+
+    expect(findDecorationByColor(decorations, newColors[1]).length).toBe(1);
+    expect(findDecorationByColor(decorations, originalColors[1]).length).toBe(0);
+
+    const newColorsAgain = [
+      '#b3ecec',
+      '#89ecda',
+      '#43e8d8',
+      '#40e0d0',
+      '#3bd6c6',
+    ];
+    atom.config.set('nyan-indent.colors', newColorsAgain);
+
+    const textToInsert2 = '        tabulation of 4';
+    editor.setTextInBufferRange([[5, 0], [5, 21]], textToInsert2);
+    const secondDecorations = findDecorations(editor);
+
+    expect(decorations.length).toBe(2);
+    expect(findDecorationByColor(secondDecorations, newColorsAgain[0]).length).toBe(1);
+    expect(findDecorationByColor(secondDecorations, newColors[0]).length).toBe(0);
+
+    expect(findDecorationByColor(secondDecorations, newColorsAgain[1]).length).toBe(1);
+    expect(findDecorationByColor(secondDecorations, newColors[1]).length).toBe(0);
+
+    expect(findDecorationByColor(secondDecorations, newColorsAgain[2]).length).toBe(1);
+    expect(findDecorationByColor(secondDecorations, newColors[2]).length).toBe(0);
+
+  });
 });
