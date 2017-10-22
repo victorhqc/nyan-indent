@@ -3,9 +3,9 @@
 import {
   openTestFile,
   findDecorations,
-  getColors,
+  getPreferences,
   activatePackage,
-  findDecorationByColor,
+  findDecorationsByActivePreferences,
   togglePackage,
 } from './helpers';
 
@@ -50,39 +50,32 @@ describe('NyanIndent', () => {
 
     editor.setText(indentedText);
 
-    const decorations = findDecorations(editor);
+    const decorations = findDecorationsByActivePreferences(editor, atom);
     expect(decorations.length).toBe(15);
 
-    const colors = getColors(atom);
-
     // There should be 5 red "indentations" from top to bottom
-    const firstTabDecorations = findDecorationByColor(decorations, colors[0]);
     expect(
-      firstTabDecorations.length,
+      decorations.indentations[0],
     ).toBe(5);
 
     // There should be 4 yellow "indentations" from top to bottom
-    const secondTabDecorations = findDecorationByColor(decorations, colors[1]);
     expect(
-      secondTabDecorations.length,
+      decorations.indentations[1],
     ).toBe(4);
 
     // There should be 3 green "indentations" from top to bottom
-    const thirdTabDecorations = findDecorationByColor(decorations, colors[2]);
     expect(
-      thirdTabDecorations.length,
+      decorations.indentations[2],
     ).toBe(3);
 
     // There should be 2 blue "indentations" from top to bottom
-    const fourthTabDecorations = findDecorationByColor(decorations, colors[3]);
     expect(
-      fourthTabDecorations.length,
+      decorations.indentations[3],
     ).toBe(2);
 
     // There should be 1 purple "indentation" from top to bottom
-    const fifthTabDecorations = findDecorationByColor(decorations, colors[4]);
     expect(
-      fifthTabDecorations.length,
+      decorations.indentations[4],
     ).toBe(1);
   });
 
@@ -93,29 +86,25 @@ describe('NyanIndent', () => {
     // Adds 2 tabulations
     const textToInsert = '    tabulation of 3';
     editor.setTextInBufferRange([[4, 0], [4, 21]], textToInsert);
-    const firstDecorations = findDecorations(editor);
+    const firstDecorations = findDecorationsByActivePreferences(editor, atom);
 
     expect(firstDecorations.length).toBe(2);
 
     // Adds another tabulation in another line
     const textToInsert2 = '  tabulation of 4';
     editor.setTextInBufferRange([[5, 0], [5, 21]], textToInsert2);
-    const secondDecorations = findDecorations(editor);
+    const secondDecorations = findDecorationsByActivePreferences(editor, atom);
 
     expect(secondDecorations.length).toBe(3);
 
-    const colors = getColors(atom);
-
     // There should be 2 first colors
-    const firstTabDecorations = findDecorationByColor(secondDecorations, colors[0]);
     expect(
-      firstTabDecorations.length,
+      secondDecorations.indentations[0],
     ).toBe(2);
 
     // There should be 1 second color
-    const secondTabDecorations = findDecorationByColor(secondDecorations, colors[1]);
     expect(
-      secondTabDecorations.length,
+      secondDecorations.indentations[1],
     ).toBe(1);
   });
 
@@ -199,98 +188,90 @@ describe('NyanIndent', () => {
     expect(findDecorations(editor).length).toBe(2);
   });
 
-  it('Should change painting when configuration colors change', () => {
+  it('Should change when a new set of colors change', () => {
     const editor = atom.workspace.getActiveTextEditor();
     editor.setText(indentedText);
+    const decorationsBeforeChange = findDecorationsByActivePreferences(editor, atom);
 
-    const newColors = [
-      '#ff7f7f',
-      '#ffe481',
-      '#d2ff8b',
-      '#a5d1ff',
-      '#e39cff',
-    ];
-    atom.config.set('nyan-indent.colors', newColors);
-    const decorations = findDecorations(editor);
-    expect(decorations.length).toBe(15);
+    expect(decorationsBeforeChange.chosenColor.nyan).toBe(15);
 
-    // There should be 5 red "indentations" from top to bottom
-    const firstTabDecorations = findDecorationByColor(decorations, newColors[0]);
-    expect(
-      firstTabDecorations.length,
-    ).toBe(5);
+    atom.config.set('nyan-indent.color', 'blue');
 
-    // There should be 4 yellow "indentations" from top to bottom
-    const secondTabDecorations = findDecorationByColor(decorations, newColors[1]);
-    expect(
-      secondTabDecorations.length,
-    ).toBe(4);
-
-    // There should be 3 green "indentations" from top to bottom
-    const thirdTabDecorations = findDecorationByColor(decorations, newColors[2]);
-    expect(
-      thirdTabDecorations.length,
-    ).toBe(3);
-
-    // There should be 2 blue "indentations" from top to bottom
-    const fourthTabDecorations = findDecorationByColor(decorations, newColors[3]);
-    expect(
-      fourthTabDecorations.length,
-    ).toBe(2);
-
-    // There should be 1 purple "indentation" from top to bottom
-    const fifthTabDecorations = findDecorationByColor(decorations, newColors[4]);
-    expect(
-      fifthTabDecorations.length,
-    ).toBe(1);
+    const decorationsAfterChange = findDecorationsByActivePreferences(editor, atom);
+    expect(decorationsAfterChange.chosenColor.blue).toBe(15);
+    expect(decorationsAfterChange.chosenColor.nyan).toBe(undefined);
   });
 
-  it('Should use new colors after configuration colors changed', () => {
+  it('Should change when the opacity is changed', () => {
     const editor = atom.workspace.getActiveTextEditor();
-    editor.setText(notIndentedText);
-    const originalColors = getColors(atom);
+    editor.setText(indentedText);
+    const decorationsBeforeChange = findDecorationsByActivePreferences(editor, atom);
+    expect(decorationsBeforeChange.opacity['0.4']).toBe(15);
 
-    const newColors = [
-      '#ff7f7f',
-      '#ffe481',
-      '#d2ff8b',
-      '#a5d1ff',
-      '#e39cff',
-    ];
-    atom.config.set('nyan-indent.colors', newColors);
+    atom.config.set('nyan-indent.opacity', '80');
 
-    const textToInsert = '    tabulation of 4';
-    editor.setTextInBufferRange([[5, 0], [5, 21]], textToInsert);
-    const decorations = findDecorations(editor);
+    const decorationsAfterChange = findDecorationsByActivePreferences(editor, atom);
+    expect(decorationsAfterChange.opacity['0.8']).toBe(15);
+    expect(decorationsAfterChange.opacity['0.4']).toBe(undefined);
+  });
 
-    expect(decorations.length).toBe(2);
-    expect(findDecorationByColor(decorations, newColors[0]).length).toBe(1);
-    expect(findDecorationByColor(decorations, originalColors[0]).length).toBe(0);
+  it('Should use custom colors when activates option', () => {
+    const editor = atom.workspace.getActiveTextEditor();
+    editor.setText(indentedText);
+    const decorationsBeforeChange = findDecorationsByActivePreferences(editor, atom);
+    expect(decorationsBeforeChange.chosenColor.nyan).toBe(15);
 
-    expect(findDecorationByColor(decorations, newColors[1]).length).toBe(1);
-    expect(findDecorationByColor(decorations, originalColors[1]).length).toBe(0);
+    atom.config.set('nyan-indent.useCustomColors', true);
 
-    const newColorsAgain = [
-      '#b3ecec',
-      '#89ecda',
-      '#43e8d8',
-      '#40e0d0',
-      '#3bd6c6',
-    ];
-    atom.config.set('nyan-indent.colors', newColorsAgain);
+    const decorationsAfterChange = findDecorationsByActivePreferences(editor, atom);
+    expect(decorationsAfterChange.chosenColor.nyan).toBe(undefined);
 
-    const textToInsert2 = '        tabulation of 4';
-    editor.setTextInBufferRange([[5, 0], [5, 21]], textToInsert2);
-    const secondDecorations = findDecorations(editor);
+    const {
+      customColors,
+    } = getPreferences(atom);
 
-    expect(decorations.length).toBe(2);
-    expect(findDecorationByColor(secondDecorations, newColorsAgain[0]).length).toBe(1);
-    expect(findDecorationByColor(secondDecorations, newColors[0]).length).toBe(0);
+    expect(decorationsAfterChange.colors[customColors['0'].toHexString()]).toBe(5);
+    expect(decorationsAfterChange.colors[customColors['1'].toHexString()]).toBe(4);
+    expect(decorationsAfterChange.colors[customColors['2'].toHexString()]).toBe(3);
+    expect(decorationsAfterChange.colors[customColors['3'].toHexString()]).toBe(2);
+    expect(decorationsAfterChange.colors[customColors['4'].toHexString()]).toBe(1);
+  });
 
-    expect(findDecorationByColor(secondDecorations, newColorsAgain[1]).length).toBe(1);
-    expect(findDecorationByColor(secondDecorations, newColors[1]).length).toBe(0);
+  it('Should change painting when changing custom colors', () => {
+    const editor = atom.workspace.getActiveTextEditor();
+    editor.setText(indentedText);
+    atom.config.set('nyan-indent.useCustomColors', true);
 
-    expect(findDecorationByColor(secondDecorations, newColorsAgain[2]).length).toBe(1);
-    expect(findDecorationByColor(secondDecorations, newColors[2]).length).toBe(0);
+    const {
+      customColors: customColorsBefore,
+    } = getPreferences(atom);
+    const decorationsBeforeChange = findDecorationsByActivePreferences(editor, atom);
+
+    expect(decorationsBeforeChange.colors[customColorsBefore['0'].toHexString()]).toBe(5);
+    expect(decorationsBeforeChange.colors[customColorsBefore['1'].toHexString()]).toBe(4);
+    expect(decorationsBeforeChange.colors[customColorsBefore['2'].toHexString()]).toBe(3);
+    expect(decorationsBeforeChange.colors[customColorsBefore['3'].toHexString()]).toBe(2);
+    expect(decorationsBeforeChange.colors[customColorsBefore['4'].toHexString()]).toBe(1);
+
+    atom.config.set('nyan-indent.customColors', {
+      0: '#0c6164',
+      1: '#075154',
+      2: '#044244',
+      3: '#02383a',
+      4: '#002c2d',
+    });
+    const decorationsAfterChange = findDecorationsByActivePreferences(editor, atom);
+
+    expect(decorationsAfterChange.colors[customColorsBefore['0'].toHexString()]).toBe(undefined);
+    expect(decorationsAfterChange.colors[customColorsBefore['1'].toHexString()]).toBe(undefined);
+    expect(decorationsAfterChange.colors[customColorsBefore['2'].toHexString()]).toBe(undefined);
+    expect(decorationsAfterChange.colors[customColorsBefore['3'].toHexString()]).toBe(undefined);
+    expect(decorationsAfterChange.colors[customColorsBefore['4'].toHexString()]).toBe(undefined);
+
+    expect(decorationsAfterChange.colors['#0c6164']).toBe(5);
+    expect(decorationsAfterChange.colors['#075154']).toBe(4);
+    expect(decorationsAfterChange.colors['#044244']).toBe(3);
+    expect(decorationsAfterChange.colors['#02383a']).toBe(2);
+    expect(decorationsAfterChange.colors['#002c2d']).toBe(1);
   });
 });
