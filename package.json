@@ -2,7 +2,7 @@
   "name": "nyan-indent",
   "main": "./lib/nyan-indent",
   "version": "0.9.2",
-  "description": "Rainbow indentation",
+  "description": "Colorful indentation",
   "keywords": [
     "atom",
     "indentation",
