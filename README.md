@@ -30,3 +30,4 @@ Go to the Atom Command Palette and choose `nyan-indent: toggle`.
 
 ![Aquamarine](https://i.imgur.com/CIox3zQ.png)
 ![Pink](https://i.imgur.com/PwHYv5i.png)
+And much more!
