@@ -3,7 +3,7 @@
 
 Colorful indentation
 
-![Nyan Indentt](https://i.imgur.com/kTsHQrE.png)
+![Nyan Indent](https://i.imgur.com/kTsHQrE.png)
 
 ## Features
 Sometimes is difficult to follow the indentation. Use this package to simplify that and add a bit of color.
