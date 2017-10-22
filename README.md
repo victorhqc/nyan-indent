@@ -1,10 +1,9 @@
 # nyan-indent
-
 [![Build Status](https://travis-ci.org/victorhqc/nyan-indent.svg?branch=master)](https://travis-ci.org/victorhqc/nyan-indent)
 
 Colorful indentation
 
-![nyan-indent](https://i.imgur.com/kTsHQrE.png)
+![Nyan Indentt](https://i.imgur.com/kTsHQrE.png)
 
 ## Features
 Sometimes is difficult to follow the indentation. Use this package to simplify that and add a bit of color.
