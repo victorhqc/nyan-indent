@@ -1,9 +1,7 @@
 # nyan-indent
+![Build Status](https://img.shields.io/circleci/project/github/victorhqc/nyan-indent/master.svg) ![License](https://img.shields.io/apm/l/nyan-indent.svg) ![Version](https://img.shields.io/apm/v/nyan-indent.svg) ![Downloads](https://img.shields.io/apm/dm/nyan-indent.svg)
+
 Colorful indentation
-
-![Nyan Indent](https://i.imgur.com/kTsHQrE.png)
-
-[![Build Status](https://travis-ci.org/victorhqc/nyan-indent.svg?branch=master)](https://travis-ci.org/victorhqc/nyan-indent)
 
 ## Installation
 
