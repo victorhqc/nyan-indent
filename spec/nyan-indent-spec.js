@@ -18,6 +18,16 @@ no tab here
           tabulation of 5
 `;
 
+/* eslint no-tabs: 0 */
+const indentedTextWithtabs = `
+no tab here
+	tabulation of 1
+		tabulation of 2
+			Tabulation of 3
+				Tabulation of 4
+					Tabulation of 5
+`;
+
 const notIndentedText = `
 no tab here
 tabulation of 1
@@ -273,5 +283,114 @@ describe('NyanIndent', () => {
     expect(decorationsAfterChange.colors['#044244']).toBe(3);
     expect(decorationsAfterChange.colors['#02383a']).toBe(2);
     expect(decorationsAfterChange.colors['#002c2d']).toBe(1);
+  });
+
+  it('Should paint correctly when handling tabulations', () => {
+    const editor = atom.workspace.getActiveTextEditor();
+
+    editor.setText(indentedTextWithtabs);
+
+    const rawDecorations = findDecorations(editor);
+    const decorations = findDecorationsByActivePreferences(editor, atom);
+    expect(decorations.length).toBe(15);
+
+    // There should be 5 red "indentations" from top to bottom
+    expect(
+      decorations.indentations[0],
+    ).toBe(5);
+
+    // The first indentation range should be [[2, 0], [2, 1]]
+    const marker1 = rawDecorations[0].getMarker();
+    expect(
+      marker1.getBufferRange().toString(),
+    ).toBe('[(2, 0) - (2, 1)]');
+
+    // There should be 4 yellow "indentations" from top to bottom
+    expect(
+      decorations.indentations[1],
+    ).toBe(4);
+
+    // Next two markers should be:
+    // [[3, 0], [3, 1]] & [[3, 1], [3, 2]]
+    const marker2 = rawDecorations[1].getMarker();
+    expect(
+      marker2.getBufferRange().toString(),
+    ).toBe('[(3, 0) - (3, 1)]');
+    const marker3 = rawDecorations[2].getMarker();
+    expect(
+      marker3.getBufferRange().toString(),
+    ).toBe('[(3, 1) - (3, 2)]');
+
+    // There should be 3 green "indentations" from top to bottom
+    expect(
+      decorations.indentations[2],
+    ).toBe(3);
+
+    // Next three markers should be:
+    // [[4, 0], [4, 1]], [[4, 1], [4, 2]] & [[4, 2], [4, 3]]
+    const marker4 = rawDecorations[3].getMarker();
+    expect(
+      marker4.getBufferRange().toString(),
+    ).toBe('[(4, 0) - (4, 1)]');
+    const marker5 = rawDecorations[4].getMarker();
+    expect(
+      marker5.getBufferRange().toString(),
+    ).toBe('[(4, 1) - (4, 2)]');
+    const marker6 = rawDecorations[5].getMarker();
+    expect(
+      marker6.getBufferRange().toString(),
+    ).toBe('[(4, 2) - (4, 3)]');
+
+    // There should be 2 blue "indentations" from top to bottom
+    expect(
+      decorations.indentations[3],
+    ).toBe(2);
+
+    // Next four markers should be:
+    // [[5, 0], [5, 1]], [[5, 1], [5, 2]], [[5, 2], [5, 3]] & [[5, 3], [5, 4]]
+    const marker7 = rawDecorations[6].getMarker();
+    expect(
+      marker7.getBufferRange().toString(),
+    ).toBe('[(5, 0) - (5, 1)]');
+    const marker8 = rawDecorations[7].getMarker();
+    expect(
+      marker8.getBufferRange().toString(),
+    ).toBe('[(5, 1) - (5, 2)]');
+    const marker9 = rawDecorations[8].getMarker();
+    expect(
+      marker9.getBufferRange().toString(),
+    ).toBe('[(5, 2) - (5, 3)]');
+    const marker10 = rawDecorations[9].getMarker();
+    expect(
+      marker10.getBufferRange().toString(),
+    ).toBe('[(5, 3) - (5, 4)]');
+
+    // There should be 1 purple "indentation" from top to bottom
+    expect(
+      decorations.indentations[4],
+    ).toBe(1);
+
+    // Next five markers should be:
+    // [[6, 0], [6, 1]], [[6, 1], [6, 2]], [[6, 2], [6, 3]], [[6, 3], [6, 4]] & [[6, 4], [6, 5]]
+    const marker11 = rawDecorations[10].getMarker();
+    expect(
+      marker11.getBufferRange().toString(),
+    ).toBe('[(6, 0) - (6, 1)]');
+    const marker12 = rawDecorations[11].getMarker();
+    expect(
+      marker12.getBufferRange().toString(),
+    ).toBe('[(6, 1) - (6, 2)]');
+    const marker13 = rawDecorations[12].getMarker();
+    expect(
+      marker13.getBufferRange().toString(),
+    ).toBe('[(6, 2) - (6, 3)]');
+    const marker14 = rawDecorations[13].getMarker();
+    expect(
+      marker14.getBufferRange().toString(),
+    ).toBe('[(6, 3) - (6, 4)]');
+    const marker15 = rawDecorations[14].getMarker();
+    expect(
+      marker15.getBufferRange().toString(),
+    ).toBe('[(6, 4) - (6, 5)]');
   });
 });
