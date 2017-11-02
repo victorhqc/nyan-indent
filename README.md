@@ -25,15 +25,16 @@ Sometimes is difficult to follow the indentation. Use this package to simplify t
 ## Usage
 Just type and see how the tabulation color is filled.
 
-![Nyan indent screen capture](https://i.imgur.com/mr2SlqH.gif)
+![Nyan indent screen capture](https://i.imgur.com/Il0i0C6.gif)
 
 You can also toggle the colors if you need to deactivate it or reactivate it quickly.
 Go to the Atom Command Palette and choose `nyan-indent: toggle`.
 
-![Nyan indent toggle](https://i.imgur.com/YKDlgXG.gif)
+![Nyan indent toggle](https://i.imgur.com/gDqvAXv.gif)
 
 ## Explore available colors
 
 ![Aquamarine](https://i.imgur.com/CIox3zQ.png)
 ![Pink](https://i.imgur.com/PwHYv5i.png)
-And much more!
+
+And much more colors!
