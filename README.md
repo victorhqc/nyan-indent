@@ -5,6 +5,15 @@ Colorful indentation
 
 [![Build Status](https://travis-ci.org/victorhqc/nyan-indent.svg?branch=master)](https://travis-ci.org/victorhqc/nyan-indent)
 
+## Installation
+
+You can install via `apm`:
+```sh
+apm install nyan-indent
+```
+
+Or, just search for `nyan-indent` inside Atom's package panel.
+
 ## Features
 Sometimes is difficult to follow the indentation. Use this package to simplify that and add a bit of color.
 ![Configuration](https://i.imgur.com/4ZwqTc2.png)
