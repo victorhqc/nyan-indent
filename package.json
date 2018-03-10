@@ -1,7 +1,7 @@
 {
   "name": "nyan-indent",
   "main": "./lib/nyan-indent",
-  "version": "0.9.7",
+  "version": "0.9.8",
   "description": "Colorful indentation",
   "keywords": [
     "atom",
